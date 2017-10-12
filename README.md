@@ -1,6 +1,26 @@
 # Centos7.0 Logstash的logstash-input-jdbc，mysql数据实时同步ElasticSearch及词库 #
 
 
+----------
+
+- 引言：elasticsearch 的出现使得我们的存储、检索数据更快捷、方便。但很多情况下，我们的需求是：现在的数据存储在mysql、oracle等关系型传统数据库中，如何尽量不改变原有数据库表结构，将这些数据的insert,update,delete操作结果实时同步到elasticsearch(简称ES)
+- 常用的一些ES同步方法：
+
+1. 1、elasticsearch-jdbc: 严格意义上它已经不是第三方插件。已经成为独立的第三方工具。不支持5.5.1
+
+1. 2、elasticsearch-river-mysql插件:  https://github.com/scharron/elasticsearch-river-mysql 
+
+1. 3、go-mysql-elasticsearch(国内作者siddontang):  https://github.com/siddontang/go-mysql-elasticsearch
+
+1. 4、python-mysql-replication:  github地址 https://github.com/noplay/python-mysql-replication
+
+1. 5、MySQL Binlog:  通过 MySQL binlog 将 MySQL 的数据同步给 ES， 只能使用 row 模式的 binlog。
+
+1. 6、Logstash-input-jdbc:  github地址 https://github.com/logstash-plugins/logstash-input-jdbc
+
+----------
+今天我介绍的是用Logstash-input-jdbc方法同步mysql数据到es.
+
 >**安装jdk1.8,采用yum安装方式，非常简单**
 
 
