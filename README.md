@@ -1,10 +1,7 @@
 # Centos7.0 Logstash的logstash-input-jdbc，mysql数据实时同步ElasticSearch及词库 #
 
 
-----------
-
-
-> #安装jdk1.8,采用yum安装方式，非常简单
+>**安装jdk1.8,采用yum安装方式，非常简单**
 
 
 1、查看yum库中jdk的版本
