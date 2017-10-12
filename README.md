@@ -4,7 +4,7 @@
 ----------
 
 
-> **安装jdk1.8,采用yum安装方式，非常简单**
+> ##安装jdk1.8,采用yum安装方式，非常简单
 
 
 1、查看yum库中jdk的版本
@@ -41,7 +41,9 @@
 ----------
 
 
->**安装 elasticsearch 2.4.6**
+>##安装 elasticsearch 2.4.6
+
+- 参考链接：[https://www.digitalocean.com/community/tutorials/how-to-install-elasticsearch-logstash-and-kibana-elk-stack-on-centos-7](https://www.digitalocean.com/community/tutorials/how-to-install-elasticsearch-logstash-and-kibana-elk-stack-on-centos-7)
 
 Elasticsearch可以用包管理器通过添加弹性的包库进行安装。
 
@@ -106,7 +108,7 @@ Elasticsearch可以用包管理器通过添加弹性的包库进行安装。
 
 
 
->**安装ElasticSearch Head 插件**
+>##安装ElasticSearch Head 插件
 
 1.首先查找elasticsearch 安装目录
 
@@ -123,6 +125,142 @@ Elasticsearch可以用包管理器通过添加弹性的包库进行安装。
     http://192.168.0.60:9200/_plugin/head/
 
 
->**安装Logstash 2.2**
 
-　　
+
+>##安装ElasticSearch IK分词器
+
+- 参考版本链接：[http://https://github.com/medcl/elasticsearch-analysis-ik](http://https://github.com/medcl/elasticsearch-analysis-ik)
+
+1.进入elasticsearch/plugins插件目录：
+
+    cd /usr/share/elasticsearch/plugins
+
+2.创建ik文件夹
+
+    mkdir ik
+
+3.下载压缩包，ik 包版本要跟elasticsearch 版本对应：
+
+    wget https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v1.9.1/elasticsearch-analysis-ik-1.9.1.zip
+    
+4.直接压缩到ik 文件目录下：
+  
+    uzip elasticsearch-analysis-ik-1.9.1.zip
+
+5.进入elasticsearch.yml文件增加下面一行，然后重启下ES
+    
+    index.analysis.analyzer.ik.type : 'ik'
+
+6.打开浏览器IK测试：
+
+    http://192.168.0.60:9200/index/_analyze?analyzer=ik&text=中华人民共和国&pretty=true
+
+
+
+>##安装Logstash 2.2
+
+1.我们创建和编辑Logstash新百胜库文件：
+
+   `sudo vi /etc/yum.repos.d/logstash.repo`
+
+2.添加以下配置：
+
+    [logstash-2.2]
+    name=logstash repository for 2.2 packages
+    baseurl=http://packages.elasticsearch.org/logstash/2.2/centos
+    gpgcheck=1
+    gpgkey=http://packages.elasticsearch.org/GPG-KEY-elasticsearch
+    enabled=1
+
+保存并退出。
+
+3.用这个命令安装Logstash：
+    
+    sudo yum -y install logstash
+
+4.进入logstash bin目录：
+
+    `cd /opt/logstash/bin`
+
+5.运行：
+
+    ./logstash -e 'input{stdin{}}output{stdout{codec=>rubydebug}}'
+
+6.启动后输入：xing test ,显示结果如下表示正常：
+
+    OpenJDK 64-Bit Server VM warning: If the number of processors is expected to increase from one, then you should configure the number of parallel GC threads appropriately using -XX:ParallelGCThreads=N
+    xing test
+    Settings: Default pipeline workers: 1
+    Logstash startup completed
+    {
+       "message" => "xing test",
+      "@version" => "1",
+    "@timestamp" => "2017-10-12T09:46:05.884Z",
+      "host" => "shanghai.ai01"
+    }
+
+>##安装连mysql java 驱动包
+
+1.先进入logstash 根目录：
+
+    cd /opt/logstash
+
+2.下载mysql-connector-java-5.1.44压缩包：
+
+    wget https://cdn.mysql.com//Downloads/Connector-J/mysql-connector-java-5.1.44.tar.gz
+
+3.解压：
+
+    tar -zxvf mysql-connector-java-5.1.44.tar.gz
+
+4.将解压的 mysql-connector-java-5.1.44-bin.jar 放到根目录下
+
+    mv mysql-connector-java-5.1.44-bin.jar /opt/logstash/
+
+5.在该目录下新建etc,并创建.cnf和.sql文件，名字自取：
+
+      mkdir -p etc
+      cd etc
+      vi wp.cnf
+      vi wp.sql
+
+6.配置wp.cnf文件：
+
+    input {
+    stdin {
+    }
+    jdbc {
+    # 数据库地址  端口  数据库名
+      jdbc_connection_string => "jdbc:mysql://192.168.0.60:3306/wordpress"
+    # 数据库用户名
+      jdbc_user => "root"
+    # 数据库密码
+      jdbc_password => "1"
+    # mysql java驱动地址
+      jdbc_driver_library => "/opt/logstash/mysql-connector-java-5.1.44-bin.jar"
+      jdbc_driver_class => "com.mysql.jdbc.Driver"
+      jdbc_paging_enabled => "true"
+      jdbc_page_size => "50000"
+    # sql 语句文件
+      statement_filepath => "/opt/logstash/etc/wp.sql"
+      schedule => "* * * * *"
+      type => "jdbc"
+    }
+    }
+    output {
+    elasticsearch {
+    hosts => ["192.168.0.61:9200"]
+    index => "hangzhou"
+    document_id => "%{id}"
+    }
+    stdout {
+    codec => json_lines
+    }
+    }
+保存并退出
+
+7.启动logstash:
+
+    bin/logstash -f etc/wp.conf
+
+8.然后你就会看到查询的数据以json的格式显示出来，在head插件里有日志记录显示，表明配置成功！
