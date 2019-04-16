@@ -278,4 +278,11 @@ Elasticsearch可以用包管理器通过添加弹性的包库进行安装。
 
     bin/logstash -f etc/wp.conf
 
-8.然后你就会看到查询的数据以json的格式显示出来，在head插件里有日志记录显示，表明配置成功！
+8.然后你就会看到查询的数据以json的格式显示出来，在head插件里有日志记录显示，表明配置成功！  
+----------
+## 技术交流  
+*   感觉对你有帮助，记得右上角给个Star，或打赏作者喝咖啡：  
+ <img border="0" src="https://github.com/xing609/AndroidDoc/blob/master/img/zfb_pay.jpg" width="200" hegiht="250" align=center>  <img border="0" src="https://github.com/xing609/AndroidDoc/blob/master/img/wx_pay.png" width="200" hegiht="250" align=center>
+*    欢迎加入Android 学习交流群：**413893967**
+   <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5EUEsBC"><img border="0" src="http://pub.idqqimg.com/wpa/images/group.png"></a>
+*    个人联系方式：512002160@qq.com
