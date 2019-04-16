@@ -1,7 +1,5 @@
 # Centos7.0 Logstash的logstash-input-jdbc，mysql数据实时同步ElasticSearch及词库 #
-
-
-----------
+![](https://img.shields.io/github/stars/xing609/centos.svg?style=flat-square) ![](https://img.shields.io/github/forks/xing609/centos.svg?style=flat-square) ![GitHub watchers](https://img.shields.io/github/watchers/xing609/centos.svg?style=flat-square&label=Watch)
 
 - 引言：elasticsearch 的出现使得我们的存储、检索数据更快捷、方便。但很多情况下，我们的需求是：现在的数据存储在mysql、oracle等关系型传统数据库中，如何尽量不改变原有数据库表结构，将这些数据的insert,update,delete操作结果实时同步到elasticsearch(简称ES)
 - 常用的一些ES同步方法：
